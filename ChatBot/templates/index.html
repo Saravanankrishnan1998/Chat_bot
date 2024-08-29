@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #chatbox {
+            width: 70%; 
+            height: 500px; 
+            overflow-y: scroll; 
+            border: 1px solid #ccc; 
+            padding: 10px; 
+            margin-bottom: 10px;
+        }
+        .message { margin: 5px 0; }
+        .user { text-align: right; }
+        .bot { text-align: left; }
+        #userInput {
+            width: 40%; 
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="chatbox"></div>
+    <input id="userInput" type="text" placeholder="Type a message..." onkeypress="if(event.key === 'Enter'){ sendMessage(); }">
+    
+    <script>
+        function sendMessage() {
+            var userInput = document.getElementById("userInput").value;
+            var chatbox = document.getElementById("chatbox");
+            chatbox.innerHTML += `<p class="message user"><b>User:</b> ${userInput}</p>`;
+            document.getElementById("userInput").value = "";
+
+            fetch(`/get?msg=${userInput}`)
+                .then(response => response.json())
+                .then(data => {
+                    chatbox.innerHTML += `<p class="message bot"><b>Bot:</b> ${data}</p>`;
+                    chatbox.scrollTop = chatbox.scrollHeight;
+                });
+        }
+    </script>
+</body>
+</html>
